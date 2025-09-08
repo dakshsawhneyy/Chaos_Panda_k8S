@@ -90,6 +90,9 @@ module "ec2_instance" {
   # Attach web security group to ssh into web_server
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
+  # Attaching user_data with EC2 -- my script acts as configuration management
+  user_data = file("user-data.sh")
+
   tags = local.common_tags
 }
 
