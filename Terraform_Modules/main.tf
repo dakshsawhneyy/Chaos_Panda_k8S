@@ -7,9 +7,9 @@ module "vpc" {
   version = "~> 5.0"
 
   name = "${var.project_name}"
-  cidr = "${var.vpc_cidr}/16"
+  cidr = "${var.vpc_cidr}"
 
-  azs = locals.azs
+  azs = local.azs
   public_subnets = local.public_subnets
   private_subnets = local.private_subnets
 
@@ -82,9 +82,13 @@ module "ec2_instance" {
 
   name = "${var.project_name}-ec2"
 
+  ami = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   key_name      = "sre-god-project"
   subnet_id     = module.vpc.public_subnets[0]
+
+  # Attach web security group to ssh into web_server
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
 
   tags = local.common_tags
 }
@@ -96,14 +100,15 @@ module "ec2_instance" {
 module "db" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = "sre_god_db"
+  identifier = "sre-god-db"
 
   engine            = "postgresql"
   engine_version    = "15.3"
+  major_engine_version = "15"
   instance_class    = "db.t4g.micro"
   allocated_storage = 10
 
-  db_name  = "sre_god_db"
+  db_name  = "sre-god-db"
   username = "dakshsawhneyy"
   port     = "5432"
 
@@ -122,5 +127,4 @@ module "db" {
 
   # DB parameter group
   family = "postgres15"
-
 }
