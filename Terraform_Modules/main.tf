@@ -32,11 +32,11 @@ resource "aws_security_group" "web_sg" {
   vpc_id = module.vpc.vpc_id
 
   # Rule 1: Allow SSH traffic from your IP address
-  ingress = {
+  ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = "${var.vpc_cidr}/32"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   # Rule 2: Allow HTTP traffic from anywhere on the internet
   ingress {
@@ -61,13 +61,13 @@ resource "aws_security_group" "db_sg" {
   vpc_id = module.vpc.vpc_id
 
   # Rule: Allow PostGres Traffic from our webserver security group
-  ingress = {
+  ingress {
     from_port = 5432
     to_port = 5432
     protocol = "tcp"
     
     # Instead of CIDR Blocks, we do this
-    source_security_group_id = aws_security_group.web_sg.id
+    security_groups = [aws_security_group.web_sg.id]
   }
 
   tags = local.common_tags
@@ -84,10 +84,9 @@ module "ec2_instance" {
 
   instance_type = "t2.micro"
   key_name      = "sre-god-project"
-  subnet_id     = vpc.public_subnets.id
+  subnet_id     = module.vpc.public_subnets[0]
 
   tags = local.common_tags
-  
 }
 
 

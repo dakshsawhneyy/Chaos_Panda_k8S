@@ -5,11 +5,11 @@ output "vpc_id" {
 
 output "web_security_group_id" {
   description = "Output for Web Security Group"
-  value = resource.aws_security_group.web_sg.id
+  value = aws_security_group.web_sg.id
 }
 output "db_security_group_id" {
   description = "Output for DB Security Group"
-  value = resource.aws_security_group.db_sg.id
+  value = aws_security_group.db_sg.id
 }
 
 
@@ -20,5 +20,5 @@ output "ec2_id" {
 
 output "rds_id" {
   description = "Output for RDS ID"
-  value = module.rds.id
+  value = module.db.db_instance_id
 }
