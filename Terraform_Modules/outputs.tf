@@ -20,5 +20,5 @@ output "ec2_id" {
 
 output "rds_id" {
   description = "Output for RDS ID"
-  value = module.db.db_instance_id
+  value = module.db.db_instance_name
 }
