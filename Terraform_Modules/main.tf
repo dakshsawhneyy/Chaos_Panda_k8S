@@ -20,6 +20,8 @@ module "vpc" {
   # Internet Gateway
   create_igw = true
 
+  # This tells the public subnets to automatically assign a public IP to any instance launched in them.
+  map_public_ip_on_launch = true 
 }
 
 # =============================================================================
@@ -36,7 +38,7 @@ resource "aws_security_group" "web_sg" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["152.58.185.33/32"]    # Only allow SSH Access from my laptop's IP
+    cidr_blocks = ["0.0.0.0/0"]    
   } 
   # Rule 2: Allow HTTP traffic from anywhere on the internet
   ingress {
@@ -119,7 +121,7 @@ module "ec2_instance" {
 
   ami = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  key_name      = "sre-god-project"
+  key_name      = "general-key-pair"
   subnet_id     = module.vpc.public_subnets[0]
 
   # Attach web security group to ssh into web_server
@@ -154,7 +156,7 @@ module "db" {
   instance_class    = "db.t4g.micro"
   allocated_storage = 10
 
-  db_name  = "sre-god-db"
+  db_name  = "SREGodDB"
   username = "dakshsawhneyy"
   port     = "5432"
 
