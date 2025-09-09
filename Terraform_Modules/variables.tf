@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "name of the project"
   type = string
-  default = "sre_god_project"
+  default = "sre-god-project"
 }
 
 variable "vpc_cidr" {
