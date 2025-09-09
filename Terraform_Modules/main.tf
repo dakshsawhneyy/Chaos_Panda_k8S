@@ -148,8 +148,8 @@ module "db" {
 
   identifier = "sre-god-db"
 
-  engine            = "postgresql"
-  engine_version    = "15.3"
+  engine            = "postgres"
+  engine_version    = "15.7"
   major_engine_version = "15"
   instance_class    = "db.t4g.micro"
   allocated_storage = 10
