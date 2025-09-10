@@ -21,6 +21,17 @@ locals {
     Owner         = data.aws_caller_identity.current.user_id
     CreatedDate   = formatdate("YYYY-MM-DD", timestamp())
   }
+
+  # Kubernetes subnet tags
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.project_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
+  }
+  
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${var.project_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
+  }
 }
 
 # Fetching Latest ubuntu image
