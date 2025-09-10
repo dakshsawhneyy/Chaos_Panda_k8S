@@ -21,7 +21,7 @@ systemctl start docker
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 897722695334.dkr.ecr.ap-south-1.amazonaws.com
 
 # Creating a dedicated docker network so our apps can run on top of that
-sudo docker network create sre-network
+sudo docker network create sre-network || true  # if network is already created, leave it. Removing errors
 
 # Pull Service A
 sudo docker pull ${service_a_imageurl}
@@ -31,6 +31,15 @@ sudo docker pull ${service_b_imageurl}
 
 # RUN Service B (no dependencies)
 sudo docker run -d -p 9001:9001 --name service-b --network sre-network --restart always ${service_b_imageurl}
+
+# * Health check for service b. Don't proceed until it doesnt starts fully
+while true; do
+    if ! curl -s --fail http://localhost:9001/hello &> /dev/null; then
+        sleep 1
+    else
+        break
+    fi
+done
 
 # Run Service A (Pass RDS HOST & SVC-B-URL AS ENV)
 # When two Docker containers are running on the same machine (our EC2 instance), they can communicate with each other directly using localhost 
