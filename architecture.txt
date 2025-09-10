@@ -1,0 +1,11 @@
+What I've Accomplished
+
+## // -- PHASE 1 -- // ##
+-> A Secure, Custom Network: You have a professional-grade VPC with public and private subnets.
+-> A Resilient Database: Your RDS instance is highly available (Multi-AZ) and securely firewalled.
+-> Creating Custom IAM Role of ECR read access, so EC2 can pull images from ECR and there's no need to AWS configure
+-> Immutable Infrastructure: You have an EC2 instance that configures itself automatically and securely from scratch on boot, using an IAM role instead of secrets.
+-> My very own custom configuration script that automatically installs microservice application on the instance
+-->> Writing prometheus and grafana configuration as well in config script, so they gets installed and starts running as well
+
+## // -- PHASE 2 -- // ##
