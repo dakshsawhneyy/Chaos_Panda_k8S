@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'node-app'
+    static_configs:
+    # in prom, we provide host ip address 172.17.0.1, instead of names -- using the host gateway IP is a common industry practice
+      - targets: ['172.17.0.1:9000', '172.17.0.1:9001']
