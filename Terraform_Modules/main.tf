@@ -133,6 +133,7 @@ module "ec2_instance" {
     service_a_imageurl = "897722695334.dkr.ecr.ap-south-1.amazonaws.com/god_level_project/service-a:latest"
     service_b_imageurl = "897722695334.dkr.ecr.ap-south-1.amazonaws.com/god-level-project/service-b:latest"
     db_host = module.db.db_instance_address
+    prometheus_config = file("${path.module}/prometheus.yml")
   })
 
   # Attaching Role with EC2
