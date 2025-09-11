@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svc-a
+  labels:
+    app: svc-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svc-a
+  template:
+    metadata:
+      labels:
+        app: svc-a
+    spec:
+      containers:
+        - name: svc-a
+          image: 897722695334.dkr.ecr.ap-south-1.amazonaws.com/god_level_project/service-a:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+          - name: SERVICE_B_URI
+            value: "http://svc-b-service:9001"
+          # We have created configMap to store host_address
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: rds-endpoint
+                key: DB_HOST
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: rds-credentials
+                key: DB_USER
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: rds-credentials
+                key: DB_NAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rds-credentials
+                key: DB_PASSWORD

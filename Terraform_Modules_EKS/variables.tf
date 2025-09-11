@@ -27,3 +27,21 @@ variable "kubernetes_version" {
   type        = string
   default     = "1.30"
 }
+
+variable "db_user" {
+  description = "Username for the RDS database"
+  type        = string
+  default     = "dakshsawhneyy"
+}
+
+variable "db_name" {
+  description = "Name of the RDS database"
+  type        = string
+  default     = "SREGodDB"
+}
+
+variable "db_password" {
+  description = "Password for the RDS database"
+  type        = string
+  sensitive   = true # This tells Terraform to hide the value in its output
+}

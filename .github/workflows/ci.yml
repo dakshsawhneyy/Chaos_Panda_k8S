@@ -32,7 +32,7 @@ jobs:
     - name: Build, tag, and push image of service-A
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }} # Use the Git commit SHA as the image tag
+        IMAGE_TAG: ${{ github.sha }} # Uses the Git unique commit hash as the image tag
       run: |
         # Build and push the docker image
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG ./Application/service-a/
@@ -41,7 +41,7 @@ jobs:
     - name: Build, tag, and push image of service-B
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }} # Use the Git commit SHA as the image tag
+        IMAGE_TAG: ${{ github.sha }}  # Uses the Git unique commit hash
       run: |
         # Build and push the docker image
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG ./Application/service-b/

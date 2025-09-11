@@ -81,6 +81,32 @@ module "eks" {
 }
 
 # =============================================================================
+# secrets and configmaps CONFIGURATION
+# =============================================================================
+resource "kubernetes_secret" "rds_credentials" {
+  metadata {
+    name = "rds-credentials"
+  }
+  # Terraform automatically Base64 encodes this data for you
+  data = {
+    DB_USER = var.db_user
+    DB_PASSWORD = var.db_password
+    DB_NAME     = var.db_name
+  }
+}
+
+# Creating config map for storing db host name
+resource "kubernetes_config_map" "rds_endpoint" {
+  metadata {
+    name = "rds_endpoint"
+  }
+  data = {
+    # We get live address from RDS and store that in configmap
+    DB_HOST = module.db.db_instance_address
+  }
+}
+
+# =============================================================================
 # RDS CONFIGURATION
 # =============================================================================
 module "db" {

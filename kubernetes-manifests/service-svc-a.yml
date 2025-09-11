@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-a-service
+  labels:
+    app: svc-a
+spec:
+  selector:
+    app: svc-a
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
