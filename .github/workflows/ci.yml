@@ -1,0 +1,48 @@
+name: Build and Push to ECR
+
+on:
+  push: 
+    branches:
+      - main
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY_A: god_level_project/service-a
+  ECR_REPOSITORY_B: god-level-project/service-b
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v3
+
+    - name: configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Log in to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image of service-A
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }} # Use the Git commit SHA as the image tag
+      run: |
+        # Build and push the docker image
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG ./Application/service-a/
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG
+
+    - name: Build, tag, and push image of service-B
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }} # Use the Git commit SHA as the image tag
+      run: |
+        # Build and push the docker image
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG ./Application/service-b/
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG
