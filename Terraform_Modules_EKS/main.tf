@@ -40,6 +40,36 @@ module "vpc" {
 }
 
 # =============================================================================
+# Security Group CONFIGURATION
+# =============================================================================
+resource "aws_security_group" "db_sg" {
+  name = "${var.project_name}-db-sg"
+  description = "Allows PostgreSQL traffic only from the EKS worker nodes"
+  vpc_id = module.vpc.vpc_id
+
+  # Allow traffic on RDS postgres port only from the EKS node security group
+  ingress {
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+
+    security_groups = [module.eks.node_security_group_id]
+  }
+
+  # Allow all outgoing traffic
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "tcp"
+
+    security_groups = [module.eks.node_security_group_id]
+  }
+
+  tags = local.common_tags
+}
+
+
+# =============================================================================
 # EKS CLUSTER CONFIGURATION
 # =============================================================================
 module "eks" {
@@ -98,7 +128,7 @@ resource "kubernetes_secret" "rds_credentials" {
 # Creating config map for storing db host name
 resource "kubernetes_config_map" "rds_endpoint" {
   metadata {
-    name = "rds_endpoint"
+    name = "rds-endpoint"
   }
   data = {
     # We get live address from RDS and store that in configmap
