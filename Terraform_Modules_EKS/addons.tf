@@ -1,3 +1,30 @@
+resource "null_resource" "install_addons" {
+  # This tells Terraform to only run this after the EKS cluster
+  # and its node group are fully created and ready.
+  depends_on = [module.eks.eks_managed_node_group]
+
+  # This block runs commands on your local machine (WSL)
+  provisioner "local-exec" {
+    # The command will first update your kubeconfig file,
+    # then add the necessary Helm repositories,
+    # and finally install nginx and cert-manager using Helm.
+    command = <<-EOT
+      aws eks --region ap-south-1 update-kubeconfig --name ${module.eks.cluster_id}
+
+      helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+      helm repo add jetstack https://charts.jetstack.io
+      helm repo update
+
+      helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+        --namespace ingress-nginx --create-namespace
+
+      helm upgrade --install cert-manager jetstack/cert-manager \
+        --namespace cert-manager --create-namespace \
+        --set installCRDs=true
+    EOT
+  }
+}
+
 # # =============================================================================
 # # EKS ADD-ONS AND EXTENSIONS
 # # =============================================================================
