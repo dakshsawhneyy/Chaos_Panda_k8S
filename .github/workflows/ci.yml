@@ -2,8 +2,8 @@ name: Build and Push to ECR
 
 on:
   push: 
-    branches:
-      - main
+    branches: [main]
+    paths: ['Application/**']   # only run, where there is any change in application
 
 env:
   AWS_REGION: ap-south-1
