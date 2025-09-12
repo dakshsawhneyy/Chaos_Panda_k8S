@@ -120,5 +120,5 @@ app.get('/call-service-b', async(req,res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Service A is running on PORT:  ${PORT}`);
+  console.log(`Service A is running on port:  ${PORT}`);
 });
