@@ -5,11 +5,6 @@ on:
     branches: [main]
     paths: ['Application/**']   # only run, where there is any change in application
 
-# env:
-#   AWS_REGION: ap-south-1
-#   ECR_REPOSITORY_A: god_level_project/service-a
-#   ECR_REPOSITORY_B: god-level-project/service-b
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -27,37 +22,16 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: Build and Push Docker Image of Service A
+    - name: Build and Push Docker Image of svc-A
       uses: docker/build-push-action@v5
       with:
         context: ./Application/service-a/
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}   # provide github unique tag
-    - name: Build and Push Docker Image of Service B
+        tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.sha }}
+
+    - name: Build and Push Docker Image of svc-B
       uses: docker/build-push-action@v5
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Log in to ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Build, tag, and push image of service-A
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }} # Uses the Git unique commit hash as the image tag
-      run: |
-        # Build and push the docker image
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG ./Application/service-a/
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG
-
-    - name: Build, tag, and push image of service-B
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}  # Uses the Git unique commit hash
-      run: |
-        # Build and push the docker image
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG ./Application/service-b/
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG
+        context: ./Application/service-b/
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.sha }}
