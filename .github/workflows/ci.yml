@@ -1,4 +1,4 @@
-name: Build and Push to ECR
+name: Build and Push to DockerHUB
 
 on:
   push: 
@@ -6,10 +6,10 @@ on:
     paths: ['Application/**']   # only run, where there is any change in application
   workflow_dispatch:
 
-env:
-  AWS_REGION: ap-south-1
-  ECR_REPOSITORY_A: god_level_project/service-a
-  ECR_REPOSITORY_B: god-level-project/service-b
+# env:
+#   AWS_REGION: ap-south-1
+#   ECR_REPOSITORY_A: god_level_project/service-a
+#   ECR_REPOSITORY_B: god-level-project/service-b
 
 jobs:
   build-and-push:
@@ -19,8 +19,23 @@ jobs:
     - name: checkout code
       uses: actions/checkout@v3
 
-    - name: configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
+    - name: Build and Push Docker Image of Service A
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Application/service-a/
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}   # provide github unique tag
+    - name: Build and Push Docker Image of Service B
+      uses: docker/build-push-action@v5
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
