@@ -27,11 +27,11 @@ jobs:
       with:
         context: ./Application/service-a/
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.sha }}
+        tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}
 
     - name: Build and Push Docker Image of svc-B
       uses: docker/build-push-action@v5
       with:
         context: ./Application/service-b/
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.sha }}
+        tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}
