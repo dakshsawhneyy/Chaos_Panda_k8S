@@ -37,35 +37,28 @@ jobs:
     - name: Build and Push Docker Image of Service B
       uses: docker/build-push-action@v5
       with:
-        context: ./Application/service-b/
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
-    # - name: configure AWS credentials
-    #   uses: aws-actions/configure-aws-credentials@v2
-    #   with:
-    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     aws-region: ${{ env.AWS_REGION }}
+    - name: Log in to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-    # - name: Log in to ECR
-    #   id: login-ecr
-    #   uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag, and push image of service-A
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }} # Uses the Git unique commit hash as the image tag
+      run: |
+        # Build and push the docker image
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG ./Application/service-a/
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG
 
-    # - name: Build, tag, and push image of service-A
-    #   env:
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #     IMAGE_TAG: ${{ github.sha }} # Uses the Git unique commit hash as the image tag
-    #   run: |
-    #     # Build and push the docker image
-    #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG ./Application/service-a/
-    #     docker push $ECR_REGISTRY/$ECR_REPOSITORY_A:$IMAGE_TAG
-
-    # - name: Build, tag, and push image of service-B
-    #   env:
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #     IMAGE_TAG: ${{ github.sha }}  # Uses the Git unique commit hash
-    #   run: |
-    #     # Build and push the docker image
-    #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG ./Application/service-b/
-    #     docker push $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG
+    - name: Build, tag, and push image of service-B
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}  # Uses the Git unique commit hash
+      run: |
+        # Build and push the docker image
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG ./Application/service-b/
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_B:$IMAGE_TAG
