@@ -4,7 +4,6 @@ import morgan from 'morgan';
 import axios from 'axios';
 import pino from 'pino'
 
-
 const app = express();
 
 const PORT = 9000;
