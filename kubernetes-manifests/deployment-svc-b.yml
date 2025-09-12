@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: svc-b
-          image: 897722695334.dkr.ecr.ap-south-1.amazonaws.com/god-level-project/service-b:latest
+          image: dakshsawhneyy/demo-service-b
           imagePullPolicy: Always
           ports:
             - containerPort: 9001
