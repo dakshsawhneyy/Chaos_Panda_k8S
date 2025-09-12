@@ -4,7 +4,6 @@ on:
   push: 
     branches: [main]
     paths: ['Application/**']   # only run, where there is any change in application
-  workflow_dispatch:
 
 # env:
 #   AWS_REGION: ap-south-1
