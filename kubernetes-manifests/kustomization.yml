@@ -6,3 +6,5 @@ resources:
   - service-svc-a.yml
   - deployment-svc-b.yml
   - service-svc-b.yml
+  - hpa-svc-a.yml
+  - hpa-svc-b.yml
