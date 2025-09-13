@@ -60,4 +60,4 @@ jobs:
         git commit -am "updated image tag for service-a and service-b"
 
         # Using personal-access-token, pushing code into repo
-        git push https://${{ secrets.MANIFEST_REPO_PAT }}@github.com/dakshsawhneyy/sre-god-project-manifests.git
+        git push https://${{ secrets.MANIFEST_REPO_PAT }}@github.com/dakshsawhneyy/god_level_project.git
