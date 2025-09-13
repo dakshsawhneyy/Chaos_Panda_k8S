@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: svc-a
-          image: dakshsawhneyy/demo-service-a:latest
+          image: dakshsawhneyy/demo-service-a:1c693a56a43434754e349333a291279e3363b4a4
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
