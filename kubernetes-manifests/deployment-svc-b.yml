@@ -5,7 +5,7 @@ metadata:
   labels:
     app: svc-b
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: svc-b
@@ -19,4 +19,8 @@ spec:
           image: dakshsawhneyy/demo-service-b:e8476e7638613e27ee932f6de5b792e09d0bf6d3
           imagePullPolicy: Always
           ports:
-            - containerPort: 9001
+          - containerPort: 9001
+          resources:
+            requests:
+              cpu: "100m" # Request 1/10th of a CPU core
+              memory: "128Mi" # Request 128 Mebibytes of memory
