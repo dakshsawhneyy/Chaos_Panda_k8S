@@ -9,6 +9,10 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    # Grant the GITHUB_TOKEN write permissions for this job
+    permissions:
+      contents: write
+
     steps:
     - name: checkout code
       uses: actions/checkout@v3
