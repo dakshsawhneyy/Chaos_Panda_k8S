@@ -110,7 +110,7 @@ app.get('/metrics', async(req,res) => {
 app.get('/call-service-b', async(req,res) => {
     try {
         const response = await axios.get(`${process.env.SERVICE_B_URI}/hello`);
-        res.send(`<h1 style="font-size: 100px">Service B says: ${response.data.message}<h1>`);
+        res.send(`<h1 style="font-size: 100px">Service B says: ${response.data}<h1>`);
     } catch (error) {
         res.status(500).json({error: 'Failed to call Service B'});
         console.error(error)
