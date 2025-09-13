@@ -1,0 +1,63 @@
+name: Build and Push to DockerHUB
+
+on:
+  push: 
+    branches: [main]
+    paths: ['Application/**']   # only run, where there is any change in application
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v3
+
+    # Continuous Integration
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
+    - name: Build and Push Docker Image of svc-A
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Application/service-a/
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}
+
+    - name: Build and Push Docker Image of svc-B
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Application/service-b/
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}
+
+    # Continuous Delivery  -- change the tag in deployment, so argocd can deploy that image to k8s
+    - name: Update Kubernetes manifest
+      run: |
+        # Clone the manifests
+        # git clone https://github.com/dakshsawhneyy/god_level_project.git
+        # cd god_level_project
+
+        # No need to gitclone because actions/checkout@v3 is already doing that
+
+        # Update the image tag for service-a using sed command -- sed -i 's/find/replace/g' -- using | as seperator because image contains /
+        sed -i 's|image:.*\/demo-service-a:.*|image: ${{secrets.DOCKER_USERNAME}}/demo-service-a:${{github.sha}}|g' kubernetes-manifests/deployment-svc-a.yml
+
+        # Update the image tag for service-b using sed command -- sed -i 's/find/replace/g'
+        sed -i 's|image:.*\/demo-service-b:.*|image: ${{secrets.DOCKER_USERNAME}}/demo-service-b:${{github.sha}}|g' kubernetes-manifests/deployment-svc-b.yml
+
+        # Configure git
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+
+        # Commit and push the change
+        git commit -am "updated image tag for service-a and service-b"
+
+        # Using personal-access-token, pushing code into repo
+        git push https://${{ secrets.MANIFEST_REPO_PAT }}@github.com/dakshsawhneyy/sre-god-project-manifests.git
