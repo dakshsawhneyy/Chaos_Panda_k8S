@@ -1,0 +1,21 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: sre-project-cpu-chaos
+  namespace: default
+spec:
+  engineState: 'active'
+  appinfo:
+    appns: 'default'
+    applabel: 'app=svc-a'
+    appkind: 'deployment'
+  chaosServiceAccount: litmus-admin
+  experiments:
+  - name: pod-cpu-hog
+    spec:
+      components:
+        env:
+          - name: TOTAL_CHAOS_DURATION
+            value: '60' # Run the stress test for 60 seconds
+          - name: CPU_CORES
+            value: '1' # Consume 1 full CPU core
