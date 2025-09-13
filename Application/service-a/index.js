@@ -61,7 +61,7 @@ app.use((req,res,next) => {
 
 // Handling Requests
 app.get('/', (req,res) => {
-    res.status(200).json({message: 'Hello from Service A ~DakshSawhney'});
+    res.status(200).json({message: 'Hello from Service A ~dakshsawhneyy'});
 })
 
 app.get('/healthy', (req, res) => {
