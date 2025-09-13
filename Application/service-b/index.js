@@ -56,5 +56,5 @@ app.get('/metrics', async(req,res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(`Service B is running on PORT: ${PORT}`);
+    console.log(`Service B is running on port: ${PORT}`);
 })
