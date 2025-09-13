@@ -45,7 +45,7 @@ app.use((req,res,next) => {
 
 
 app.get('/hello', (req,res) => {
-    res.status(200).json({message: 'Hello from Service B'});
+    res.status(200).json({message: 'Hello from Service B - Daksh Sawhney'});
 })
 
 // Sending personalized metrics to /metrics
