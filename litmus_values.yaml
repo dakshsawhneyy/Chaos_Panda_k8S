@@ -1,0 +1,6 @@
+mongodb:
+  volumePermissions:
+    image:
+      registry: docker.io
+      repository: bitnami/os-shell
+      tag: latest
