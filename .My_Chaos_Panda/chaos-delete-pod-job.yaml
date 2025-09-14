@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pod-delete-chaos-job
+  namespace: app
+spec:
+  template:
+    spec:
+      # This tells the job to use the identity and permissions we just created
+      serviceAccountName: chaos-panda-sa
+      containers:
+      - name: chaos-panda
+        image: bitnami/kubectl # A simple, trusted image that contains the kubectl tool
+        # This is the chaos command!
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "kubectl get pods -n app -l app=svc-a -o jsonpath='{.items[0].metadata.name}' | xargs kubectl delete pod"
+      restartPolicy: Never # A Job should only run once
+  backoffLimit: 4
+
+
+# * understanding the command that deletes the pod
+# kubectl get pods -l app=svc-a: Finds all pods with the label app=svc-a.
+# -o jsonpath='{.items[0].metadata.name}': Formats the output to get just the name of the first pod in the list.
+# | xargs kubectl delete pod: Pipes that pod name to the kubectl delete pod command.

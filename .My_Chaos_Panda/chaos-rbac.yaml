@@ -1,0 +1,22 @@
+# providing permission to our job, so it can delete pods
+
+# Creating Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: chaos-panda-sa # sa stands for ServiceAccount
+  namespace: app
+---
+# Creating ClusterRoleBinding (The Permission)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: chaos-panda-rb
+subjects:
+- kind: ServiceAccount
+  name: chaos-panda-sa
+  namespace: app
+roleRef:
+  kind: ClusterRole
+  name: admin   # We'll use the powerful built-in 'admin' role for simplicity
+  apiGroup: rbac.authorization.k8s.io
