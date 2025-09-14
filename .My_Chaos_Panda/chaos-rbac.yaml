@@ -7,16 +7,50 @@ metadata:
   name: chaos-panda-sa # sa stands for ServiceAccount
   namespace: app
 ---
-# Creating ClusterRoleBinding (The Permission)
+# Creating ClusterRole and giving it permissions
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: Role
 metadata:
-  name: chaos-panda-rb
+  name: deployment-manager-role
+  namespace: app
+rules:
+# This rule gives permission to manage pods (for users attack experiment)
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "list", "delete"]
+# This new rule gives permission to manage deployments (for second experiment)
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "patch"] # "patch" is the permission needed to scale
+---
+# Attaching Role with Service Account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: chaos-panda-rolebinding
+  namespace: app
 subjects:
 - kind: ServiceAccount
-  name: chaos-panda-sa
+  name: chaos-panda-sa # sa stands for ServiceAccount
   namespace: app
 roleRef:
-  kind: ClusterRole
-  name: admin   # We'll use the powerful built-in 'admin' role for simplicity
+  kind: Role
+  name: deployment-manager-role # We're binding to our new, specific role
   apiGroup: rbac.authorization.k8s.io
+---
+# Creating RoleBinding (The Permission)
+
+# ! This is Applicable for only one namespace since its a role. We need ClusterRole for true master key
+
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: chaos-panda-rb
+# subjects:
+# - kind: ServiceAccount
+#   name: chaos-panda-sa
+#   namespace: app
+# roleRef:
+#   kind: ClusterRole
+#   name: admin   # We'll use the powerful built-in 'admin' role for simplicity
+#   apiGroup: rbac.authorization.k8s.io
