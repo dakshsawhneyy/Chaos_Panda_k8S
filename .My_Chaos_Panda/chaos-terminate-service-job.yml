@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scaledown-chaos-job
+  namespace: app
+spec:
+  template:
+    spec:
+      serviceAccountName: chaos-panda-sa
+      containers:
+      - name: chaos-monkey
+        image: bitnami/kubectl
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "echo '--- SCALING DOWN SERVICE-B ---'; kubectl scale deployment svc-b --replicas=0; echo '--- WAITING FOR 30 SECONDS ---'; sleep 30; echo '--- SCALING UP SERVICE-B ---'; kubectl scale deployment svc-b --replicas=2; echo '--- CHAOS EXPERIMENT COMPLETE ---'"
+      restartPolicy: Never
+  backoffLimit: 4
