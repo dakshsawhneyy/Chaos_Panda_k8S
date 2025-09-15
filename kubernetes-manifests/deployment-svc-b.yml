@@ -24,3 +24,6 @@ spec:
             requests:
               cpu: "100m" # Request 1/10th of a CPU core
               memory: "128Mi" # Request 128 Mebibytes of memory
+            limits:
+              memory: "256Mi"
+              cpu: "300m"

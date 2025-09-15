@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: svc-a-v1
+  name: svc-a-v2
   labels:
     app: svc-a
 spec:
@@ -9,16 +9,16 @@ spec:
   selector:
     matchLabels:
       app: svc-a
-      version: v1
+      version: v2
   template:
     metadata:
       labels:
         app: svc-a
-        version: v1
+        version: v2
     spec:
       containers:
         - name: svc-a
-          image: dakshsawhneyy/demo-service-a:e8476e7638613e27ee932f6de5b792e09d0bf6d3
+          image: dakshsawhneyy/demo-service-a:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 9000

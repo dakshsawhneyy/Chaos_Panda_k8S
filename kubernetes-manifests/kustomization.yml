@@ -8,3 +8,4 @@ resources:
   - service-svc-b.yml
   - hpa-svc-a.yml
   - hpa-svc-b.yml
+  - deployment-svc-a-v2.yml

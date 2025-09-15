@@ -1,0 +1,35 @@
+# This will divide the traffic, 90% sees previous and 10% users see new deployment
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: svc-a-virtualservice
+  namespace: app
+spec:
+  hosts:
+  - svc-a-service # This applies the rule to our existing Kubernetes service
+  http:
+  - route:
+    - destination:
+        host: svc-a-service
+        subset: v1 # Defines a destination named 'v1'
+      weight: 90 # Send 90% of traffic here
+    - destination:
+        host: svc-a-service
+        subset: v2 # Defines a destination named 'v2'
+      weight: 10 # Send 10% of traffic here
+---
+# We also need a 'DestinationRule' to define what 'v1' and 'v2' mean
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: svc-a-destinationrule
+  namespace: app
+spec:
+  host: svc-a-service
+  subsets:
+  - name: v1
+    labels:
+      version: v1 # 'latest' means pods with the label version: latest
+  - name: v2
+    labels:
+      version: v2 # 'v2' means pods with the label version: v2
