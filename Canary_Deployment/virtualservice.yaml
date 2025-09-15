@@ -1,4 +1,22 @@
 # This will divide the traffic, 90% sees previous and 10% users see new deployment
+# This Gateway defines the main entry point into our mesh for HTTP traffic.
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: app-gateway
+  namespace: app
+spec:
+  selector:
+    # This tells the gateway to run on the default Istio ingress gateway controller
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*" # Apply to all incoming hostnames
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -6,17 +24,22 @@ metadata:
   namespace: app
 spec:
   hosts:
-  - svc-a-service # This applies the rule to our existing Kubernetes service
+  # The 'hosts' field must include '*' to match traffic from the Gateway.
+  # - svc-a-service # This applies the rule to our existing Kubernetes service
+  - "*"
+  # The 'gateways' field creates the link to our Gateway.
+  gateways:
+  - app-gateway
   http:
   - route:
     - destination:
         host: svc-a-service
         subset: v1 # Defines a destination named 'v1'
-      weight: 90 # Send 90% of traffic here
+      weight: 60 # Send 90% of traffic here
     - destination:
         host: svc-a-service
         subset: v2 # Defines a destination named 'v2'
-      weight: 10 # Send 10% of traffic here
+      weight: 40 # Send 10% of traffic here
 ---
 # We also need a 'DestinationRule' to define what 'v1' and 'v2' mean
 apiVersion: networking.istio.io/v1alpha3
