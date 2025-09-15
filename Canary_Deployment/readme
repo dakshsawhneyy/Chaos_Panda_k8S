@@ -1,3 +1,5 @@
 okay ingress controller is needed in both. but the question is how to expose internal services. 
 So that is done by ingress or istio. But ingress cant distribute load inside cluster. 
 So istio gateway works like ingress then virtual service does its magic
+
+# kubectl kubectl port-forward svc/istio-ingressgateway -n istio-system 4500:80 
