@@ -48,12 +48,40 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}
 
+    # Image Scanning for svc-A --- Trivy
+    - name: Image scanning of svc-a using Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        # Scan a container image instead of the filesystem
+        scan-type: 'image'
+        # The full reference to the image we just pushed to Docker Hub
+        image-ref: '${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}'
+        # Format the output as a table in the logs
+        format: table
+        # Fail the build if any HIGH or CRITICAL severity vulnerabilities are found
+        exit-code: 1
+        severity: 'CRITICAL'
+
     - name: Build and Push Docker Image of svc-B
       uses: docker/build-push-action@v5
       with:
         context: ./Application/service-b/
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}
+
+    # Image Scanning for svc-B --- Trivy
+    - name: Image scanning of svc-a using Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        # Scan a container image instead of the filesystem
+        scan-type: 'image'
+        # The full reference to the image we just pushed to Docker Hub
+        image-ref: '${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}'
+        # Format the output as a table in the logs
+        format: table
+        # Fail the build if any HIGH or CRITICAL severity vulnerabilities are found
+        exit-code: 1
+        severity: 'CRITICAL'
 
     # Continuous Delivery  -- change the tag in deployment, so argocd can deploy that image to k8s
     - name: Update Kubernetes manifest
