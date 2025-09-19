@@ -70,7 +70,7 @@ jobs:
         tags: ${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}
 
     # Image Scanning for svc-B --- Trivy
-    - name: Image scanning of svc-a using Trivy
+    - name: Image scanning of svc-B using Trivy
       uses: aquasecurity/trivy-action@master
       with:
         # Scan a container image instead of the filesystem
