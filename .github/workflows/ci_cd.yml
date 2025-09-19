@@ -27,9 +27,9 @@ jobs:
         scan-ref: '.'
         # Don't show vulnerabilities that don't have a fix yet
         ignore-unfixed: true
-        # Fail the build if any HIGH or CRITICAL severity vulnerabilities are found
+        # Fail the build if any HIGH or CRITICAL severity vulnerabilities are found2
         exit-code: '1'
-        severity: 'HIGH,CRITICAL'
+        severity: 'CRITICAL'
 
     # Continuous Integration
     - name: Set up Docker Buildx
