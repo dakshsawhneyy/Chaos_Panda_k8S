@@ -95,7 +95,7 @@ app.get('/crash', (req, res) => {
 // Logging endpoint to generate different types of logs
 app.get('/logs', (req,res) => {
     logging();
-    res.status(200).json({objective: 'To Generate logs !!!', message: 'Logs generated! Check your logging system.'});
+    res.status(200).json({objective: 'To Generate logs !!!', message: 'Logs generated! Check your logging system...'});
 })
 
 
