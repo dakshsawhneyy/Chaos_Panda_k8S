@@ -85,15 +85,15 @@ jobs:
 
 
     # --- NEW SUPPLY CHAIN SECURITY STEP --- using Cosign -- Sign the Docker Image for SVC_A and svc_B
-    - name: Install Cosign
-      uses: sigstore/cosign-installer@main
-
-    - name: Sign the docker image with Cosign
-      run: |
-        echo "${{ secrets.COSIGN_PASSWORD }}" | cosign sign --key env://COSIGN_PRIVATE_KEY '${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}'
-        echo "${{ secrets.COSIGN_PASSWORD }}" | cosign sign --key env://COSIGN_PRIVATE_KEY '${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}'
-      env:
-        COSIGN_PRIVATE_KEY: '${{ secrets.COSIGN_PRIVATE_KEY }}'
+#    - name: Install Cosign
+#     uses: sigstore/cosign-installer@main
+#
+#    - name: Sign the docker image with Cosign
+#      run: |
+#        echo "${{ secrets.COSIGN_PASSWORD }}" | cosign sign --key env://COSIGN_PRIVATE_KEY '${{ secrets.DOCKER_USERNAME }}/demo-service-a:${{ github.sha }}'
+#        echo "${{ secrets.COSIGN_PASSWORD }}" | cosign sign --key env://COSIGN_PRIVATE_KEY '${{ secrets.DOCKER_USERNAME }}/demo-service-b:${{ github.sha }}'
+#      env:
+#        COSIGN_PRIVATE_KEY: '${{ secrets.COSIGN_PRIVATE_KEY }}'
 
 
     # Continuous Delivery  -- change the tag in deployment, so argocd can deploy that image to k8s
